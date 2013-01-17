@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MemCache implementation of Cache
  * 
@@ -11,10 +12,13 @@
 
 namespace tdt\cache;
 
-class MemCache extends Cache{
+use tdt\exceptions\TDTException;
+
+class MemCache extends Cache {
+
     private $memcache;
-    
-    protected function __construct(){
+
+    protected function __construct() {
         $this->memcache = new Memcache();
         /*
          * This is something tricky in PHP. If you use pconnect (p=persistent) the connection will remain open all the time.
@@ -22,26 +26,44 @@ class MemCache extends Cache{
          * In memcache, the old but stable implementation in PHP of memcached the persistent connection works like charm
          * In memcached however there is a severe bug which leads to a memory leak. If you'd take over code from this class to implement memcached, DON'T use the persistent connect!
          */
-        if(!$this->memcache->pconnect($this->config["host"], $this->config["port"])){
-            Log::logCrit("Could not connect to memcached");
+        
+        if(!isset($this->config["host"])){
+            throw new TDTException(500, array("No host has been given to cache to."));
+        }
+        
+        if(!isset($this->config["port"])){
+            $this->config["port"] = 11211; // the default port for memcached is 11211
+        }
+        
+        if (!$this->memcache->pconnect($this->config["host"], $this->config["port"])) {
+            if (isset($this->config["log_dir"])) {
+                $log = new Logger('cache');
+                $log->pushHandler(new StreamHandler($config["log_dir"], Logger::CRITICAL));
+                $log->addCritical("Could not connect to memcached.", $this->config);                
+            }else{
+                /*
+                 * if we have no log directory, it's no use to throw a TDTException
+                 */
+                throw new \Exception("No connection could be made to the memcache. Please check your given configuration.");
+            }
         }
     }
 
-    public function set($key,$value,$timeout=60){
-	if($timeout>0){
+    public function set($key, $value, $timeout = 60) {
+        if ($timeout > 0) {
             $this->memcache->set($key, $value, FALSE, $timeout); //the true flag will compress the value using zlib
-	}
+        }
     }
 
-    public function get($key){
-        if($this->memcache->get($key)){
+    public function get($key) {
+        if ($this->memcache->get($key)) {
             return $this->memcache->get($key);
         }
         return null;
     }
-    
-    public function delete($key){
-        $this->memcache->delete($key,0);
+
+    public function delete($key) {
+        $this->memcache->delete($key, 0);
     }
-    
+
 }

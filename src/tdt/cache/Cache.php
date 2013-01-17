@@ -19,12 +19,15 @@
 
 namespace tdt\cache;
 
+use tdt\exceptions\TDTException;
+
 abstract class Cache{
     private static $instance;
     protected $config = array();
     
     
-    protected function __construct(){
+    protected function __construct(array $config){
+        $this->config = $config;
     }
 
     /*
@@ -37,14 +40,13 @@ abstract class Cache{
      */
     
     public static function getInstance(array $config){
-        if(!isset(self::$instance)){
-            $this->config = $config;
-            if(isset($this->config["system"])){
-                $cacheclass = 'tdt\\cache\\' . $this->config["system"];
+        if(!isset(self::$instance)){           
+            if(isset($config["system"])){
+                $cacheclass = 'tdt\\cache\\' . $config["system"];
                 if(class_exists($cacheclass)){
-                    self::$instance = new $cacheclass();
+                    self::$instance = new $cacheclass($config);
                 }else{
-                    throw new TDTException(551,array("tdt\cache\ ".$this->config["system"]));
+                    throw new TDTException(551,array("tdt\cache\ ".$config["system"]));
                 }
             }else{
                 throw new TDTException(500,array("The system was not set in the configuration"));
