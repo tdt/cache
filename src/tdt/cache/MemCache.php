@@ -13,6 +13,8 @@
 namespace tdt\cache;
 
 use tdt\exceptions\TDTException;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class MemCache extends Cache {
 
@@ -37,8 +39,9 @@ class MemCache extends Cache {
         
         if (!$this->memcache->pconnect($this->config["host"], $this->config["port"])) {
             if (isset($this->config["log_dir"])) {
+                $log_dir = rtrim($this->config["log_dir"], "/");
                 $log = new Logger('cache');
-                $log->pushHandler(new StreamHandler($config["log_dir"], Logger::CRITICAL));
+                $log->pushHandler(new StreamHandler($log_dir . "/log_". date('Y-m-d') . ".txt", Logger::CRITICAL));
                 $log->addCritical("Could not connect to memcached.", $this->config);                
             }else{
                 /*
