@@ -26,7 +26,7 @@ abstract class Cache{
     protected $config = array();
     
     
-    protected function __construct(array $config){
+    protected function __construct(array $config){        
         $this->config = $config;
     }
 
@@ -39,11 +39,11 @@ abstract class Cache{
      * If NoCache is used, no host or port is necessary.
      */
     
-    public static function getInstance(array $config){
+    public static function getInstance(array $config){                 
         if(!isset(self::$instance)){           
             if(isset($config["system"])){
-                $cacheclass = 'tdt\\cache\\' . $config["system"];
-                if(class_exists($cacheclass)){
+                $cacheclass = 'tdt\\cache\\TDT' . $config["system"];
+                if(class_exists($cacheclass)){                    
                     self::$instance = new $cacheclass($config);
                 }else{
                     throw new TDTException(551,array("tdt\cache\ ".$config["system"]));

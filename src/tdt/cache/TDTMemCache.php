@@ -16,12 +16,13 @@ use tdt\exceptions\TDTException;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-class MemCache extends Cache {
+class TDTMemCache extends Cache {
 
     private $memcache;
 
-    protected function __construct() {
-        $this->memcache = new Memcache();
+    protected function __construct($config) {
+        parent::__construct($config);
+        $this->memcache = new \Memcache();
         /*
          * This is something tricky in PHP. If you use pconnect (p=persistent) the connection will remain open all the time.
          * This is not a bad thing since we're using the cache all the time (you don't turn off the light of the kitchen if you're running in and out, switching it too much would even consume more)

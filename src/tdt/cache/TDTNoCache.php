@@ -10,7 +10,7 @@
  */
 namespace tdt\cache;
 
-class NoCache extends Cache{
+class TDTNoCache extends Cache{
     protected function __construct(){
         
     }
