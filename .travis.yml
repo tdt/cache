@@ -1,0 +1,12 @@
+language: php
+services:
+  - memcache
+php:
+  - "5.4"
+  - "5.3"
+before_script:
+  - chmod 777 tests/travis/memcache-setup.sh
+  - ./tests/travis/memcache-setup.sh
+  - composer install
+
+script: phpunit tests
