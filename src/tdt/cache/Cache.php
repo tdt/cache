@@ -32,7 +32,7 @@ abstract class Cache{
         $this->config = $config;
     }
 
-    /*
+    /**
      * The config expects:
      * system = name of the caching system i.e. MemCache, NoCache,...
      * host = the host on which the caching system runs
