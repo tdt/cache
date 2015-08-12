@@ -12,20 +12,37 @@
 
 namespace tdt\cache;
 
-class NoCache extends Cache{
-    protected function __construct(){
+class NoCache extends Cache
+{
+    protected function __construct()
+    {
 
     }
 
-    public function set($key,$value, $timeout=60){
+    /**
+     * @param $key
+     * @param $value
+     * @param int $timeout
+     */
+    public function set($key, $value, $timeout = 60)
+    {
         // do nothing
     }
 
-    public function get($key){
+    /**
+     * @param $key
+     * @return null
+     */
+    public function get($key)
+    {
         return null;
     }
 
-    public function delete($key){
+    /**
+     * @param $key
+     */
+    public function delete($key)
+    {
         // do nothing
     }
 

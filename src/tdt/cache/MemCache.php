@@ -17,13 +17,20 @@ use tdt\exceptions\TDTException;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-class MemCache extends Cache {
+class MemCache extends Cache
+{
 
     private $memcache;
 
-    protected function __construct($config) {
+    /**
+     * @param array $config
+     * @throws \Exception
+     */
+    protected function __construct($config)
+    {
         parent::__construct($config);
         $this->memcache = new \Memcache();
+
         /**
          * This is something tricky in PHP. If you use pconnect (p=persistent) the connection will remain open all the time.
          * This is not a bad thing since we're using the cache all the time (you don't turn off the light of the kitchen if you're running in and out, switching it too much would even consume more)
@@ -31,12 +38,12 @@ class MemCache extends Cache {
          * In memcached however there is a severe bug which leads to a memory leak. If you'd take over code from this class to implement memcached, DON'T use the persistent connect!
          */
 
-        if(!isset($this->config["host"])){
+        if (!isset($this->config["host"])) {
             // the default host for memcached localhost
             $this->config["host"] = "localhost";
         }
 
-        if(!isset($this->config["port"])){
+        if (!isset($this->config["port"])) {
             // the default port for memcached is 11211
             $this->config["port"] = 11211;
         }
@@ -45,9 +52,9 @@ class MemCache extends Cache {
             if (isset($this->config["log_dir"])) {
                 $log_dir = rtrim($this->config["log_dir"], "/");
                 $log = new Logger('cache');
-                $log->pushHandler(new StreamHandler($log_dir . "/log_". date('Y-m-d') . ".txt", Logger::CRITICAL));
+                $log->pushHandler(new StreamHandler($log_dir . "/log_" . date('Y-m-d') . ".txt", Logger::CRITICAL));
                 $log->addCritical("Could not connect to memcached.", $this->config);
-            }else{
+            } else {
                 /*
                  * if we have no log directory, it's no use to throw a TDTException
                  */
@@ -56,18 +63,33 @@ class MemCache extends Cache {
         }
     }
 
-    public function set($key, $value, $timeout = 60) {
+    /**
+     * @param $key
+     * @param $value
+     * @param int $timeout
+     */
+    public function set($key, $value, $timeout = 60)
+    {
         $this->memcache->set($key, $value, FALSE, $timeout); //the true flag will compress the value using zlib
     }
 
-    public function get($key) {
+    /**
+     * @param $key
+     * @return array|null|string
+     */
+    public function get($key)
+    {
         if ($this->memcache->get($key)) {
             return $this->memcache->get($key);
         }
         return null;
     }
 
-    public function delete($key) {
+    /**
+     * @param $key
+     */
+    public function delete($key)
+    {
         $this->memcache->delete($key);
     }
 
