@@ -10,8 +10,6 @@
 
 require "vendor/autoload.php";
 
-use tdt\cache\MemCache;
-use tdt\cache\NoCache;
 use tdt\cache\Cache;
 
 class CacheTest extends \PHPUnit_Framework_TestCase{
