@@ -67,6 +67,7 @@ class MemCache extends Cache
      * @param $key
      * @param $value
      * @param int $timeout
+     * @return mixed|void
      */
     public function set($key, $value, $timeout = 60)
     {
