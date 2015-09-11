@@ -10,13 +10,12 @@
 
 require "vendor/autoload.php";
 
-use tdt\cache\MemCache;
-use tdt\cache\NoCache;
 use tdt\cache\Cache;
 
 class CacheTest extends \PHPUnit_Framework_TestCase{
 
-    public function testCache(){
+    public function testCache()
+    {
         // Test nocache
         $nocache = $this->_createCacheInstance("NoCache");
         $nocache->set("key","value", 0);
@@ -38,7 +37,8 @@ class CacheTest extends \PHPUnit_Framework_TestCase{
         Cache::destroy();
     }
 
-    private function _createCacheInstance($type){
+    private function _createCacheInstance($type)
+    {
         $config = array("system" => $type);
         $cache = Cache::getInstance($config);
         $this->assertInstanceOf('tdt\cache\Cache', $cache, "Could not construct $type instance");

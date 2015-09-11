@@ -23,34 +23,44 @@ namespace tdt\cache;
 
 use tdt\exceptions\TDTException;
 
-abstract class Cache{
+abstract class Cache
+{
     private static $instance;
     protected $config = array();
 
 
-    protected function __construct(array $config){
+    /**
+     * @param array $config
+     */
+    protected function __construct(array $config)
+    {
         $this->config = $config;
     }
 
-    /*
+    /**
      * The config expects:
      * system = name of the caching system i.e. MemCache, NoCache,...
      * host = the host on which the caching system runs
      * port = the port on which to connect to the host
      *
      * If NoCache is used, no host or port is necessary.
+     *
+     * @param array $config
+     * @return
+     * @throws TDTException
      */
 
-    public static function getInstance(array $config){
-        if(!isset(self::$instance)){
-            if(isset($config["system"])){
+    public static function getInstance(array $config)
+    {
+        if (!isset(self::$instance)) {
+            if (isset($config["system"])) {
                 $cacheclass = 'tdt\\cache\\' . $config["system"];
-                if(class_exists($cacheclass)){
+                if (class_exists($cacheclass)) {
                     self::$instance = new $cacheclass($config);
-                }else{
-                    throw new TDTException(551, array("tdt\\cache\\".$config["system"]));
+                } else {
+                    throw new TDTException(551, array("tdt\\cache\\" . $config["system"]));
                 }
-            }else{
+            } else {
                 throw new TDTException(500, array("The cache system was not set in the configuration"));
             }
 
@@ -58,12 +68,29 @@ abstract class Cache{
         return self::$instance;
     }
 
-    public static function destroy(){
+    public static function destroy()
+    {
         self::$instance = null;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param int $TTL
+     * @return mixed
+     */
     abstract public function set($key, $value, $TTL = 60);
+
+    /**
+     * @param $key
+     * @return mixed
+     */
     abstract public function get($key);
+
+    /**
+     * @param $key
+     * @return mixed
+     */
     abstract public function delete($key);
 
 }

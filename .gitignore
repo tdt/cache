@@ -5,6 +5,7 @@ nbproject/private/*
 .settings
 .buildpath
 .project
+.idea
 tmp/*
 /vendor/
 /composer.lock
