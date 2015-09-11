@@ -87,6 +87,7 @@ class MemCache extends Cache
 
     /**
      * @param $key
+     * @return mixed|void
      */
     public function delete($key)
     {

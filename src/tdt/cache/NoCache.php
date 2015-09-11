@@ -40,6 +40,7 @@ class NoCache extends Cache
 
     /**
      * @param $key
+     * @return mixed|void
      */
     public function delete($key)
     {
